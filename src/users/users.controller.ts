@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  DefaultValuePipe,
   Get,
   Param,
   ParseIntPipe,
@@ -14,12 +15,22 @@ export class UsersController {
     return 'You sent a get request to users endpoint';
   }
 
-  @Get('/:id?')
+  @Get('/:id')
   public getUserById(
     @Param('id', ParseIntPipe) id: number | undefined,
-    @Query('limit', ParseIntPipe) limit: number | undefined,
+    @Query('limit', ParseIntPipe, new DefaultValuePipe(10))
+    limit: number | undefined,
+    @Query('page', ParseIntPipe, new DefaultValuePipe(1))
+    page: number | undefined,
   ) {
-    return { id, limit };
+    return {
+      id,
+      typeofid: typeof id,
+      limit,
+      typeoflimit: typeof limit,
+      page,
+      typeofpage: typeof page,
+    };
   }
 
   // @Get('/:id{/:optional}')

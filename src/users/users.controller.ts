@@ -7,7 +7,6 @@ import {
   ParseIntPipe,
   Post,
   Query,
-  ValidationPipe,
 } from '@nestjs/common';
 import { CreateUserDto } from './dtos/create-user.dto';
 @Controller('users')
@@ -40,8 +39,13 @@ export class UsersController {
   //   return { params, query };
   // }
 
+  // @Post()
+  // public postUserWithBody(@Body(new ValidationPipe()) body: CreateUserDto) {
+  //   return body;
+  // }
+
   @Post()
-  public postUserWithBody(@Body(new ValidationPipe()) body: CreateUserDto) {
+  public postUserWithBody(@Body() body: CreateUserDto) {
     return body;
   }
 }

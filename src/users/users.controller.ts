@@ -5,33 +5,29 @@ import {
   Get,
   Param,
   ParseIntPipe,
+  Patch,
   Post,
   Query,
 } from '@nestjs/common';
 import { CreateUserDto } from './dtos/create-user.dto';
+import { GetUsersParamDto } from './dtos/get-user-params.dto';
+import { PatchUserDto } from './dtos/patch-user.dto';
 @Controller('users')
 export class UsersController {
-  @Get()
-  public getUser() {
-    return 'You sent a get request to users endpoint';
-  }
+  // @Get()
+  // public getUser() {
+  //   return 'You sent a get request to users endpoint';
+  // }
 
   @Get('/:id')
   public getUserById(
-    @Param('id', ParseIntPipe) id: number | undefined,
-    @Query('limit', ParseIntPipe, new DefaultValuePipe(10))
+    @Param() params: GetUsersParamDto,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe)
     limit: number | undefined,
-    @Query('page', ParseIntPipe, new DefaultValuePipe(1))
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe)
     page: number | undefined,
   ) {
-    return {
-      id,
-      typeofid: typeof id,
-      limit,
-      typeoflimit: typeof limit,
-      page,
-      typeofpage: typeof page,
-    };
+    return typeof params.id;
   }
 
   // @Get('/:id{/:optional}')
@@ -46,6 +42,11 @@ export class UsersController {
 
   @Post()
   public postUserWithBody(@Body() body: CreateUserDto) {
+    return body;
+  }
+
+  @Patch()
+  public patchUserWithBody(@Body() body: PatchUserDto) {
     return body;
   }
 }

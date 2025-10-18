@@ -15,8 +15,13 @@ async function bootstrap() {
 
   // Swagger
   const config = new DocumentBuilder()
-    .setTitle('NestJS Intro')
-    .setDescription('NestJS Intro API')
+    .setTitle('NestJS Intro- Blog app API')
+    .setDescription(
+      'Use the base URL to access the API at http://localhost:3000/api',
+    )
+    .setTermsOfService('http://localhost:3000/terms-of-service')
+    .setLicense('MIT License', 'http://localhost:3000/license')
+    .addServer('http://localhost:3000/api', 'Local Server')
     .setVersion('1.0')
     .addBearerAuth()
     .build();

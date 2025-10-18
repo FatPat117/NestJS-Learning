@@ -9,7 +9,13 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import {
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { GetUsersParamDto } from './dtos/get-user-params.dto';
 import { PatchUserDto } from './dtos/patch-user.dto';
@@ -26,6 +32,34 @@ export class UsersController {
   // }
 
   @Get('/:id')
+  @ApiOperation({
+    summary: 'Fetch a user by Id',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'The user has been fetched successfully',
+  })
+  @ApiQuery({
+    name: 'limit',
+    type: Number,
+    required: false,
+    description: 'The limit of the users',
+    example: 10,
+  })
+  @ApiQuery({
+    name: 'page',
+    type: Number,
+    required: false,
+    description: 'The page of the users',
+    example: 1,
+  })
+  @ApiParam({
+    name: 'id',
+    type: Number,
+    required: false,
+    description: 'The id of the user',
+    example: 12345,
+  })
   public getUserById(
     @Param() params: GetUsersParamDto,
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe)

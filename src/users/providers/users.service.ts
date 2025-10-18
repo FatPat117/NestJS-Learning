@@ -26,4 +26,14 @@ export class UsersService {
       },
     ];
   }
+
+  // Find a user by d
+  public findOneById(id: string) {
+    return {
+      id: id,
+      firstName: 'john',
+      email: 'john@example.com',
+      age: 20,
+    };
+  }
 }

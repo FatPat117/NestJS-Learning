@@ -1,3 +1,4 @@
+import { Type } from 'class-transformer';
 import {
   IsArray,
   IsEnum,
@@ -9,9 +10,11 @@ import {
   IsUrl,
   Matches,
   MinLength,
+  ValidateNested,
 } from 'class-validator';
 import { PostStatus } from '../enums/postStatus.enum';
 import { PostType } from '../enums/postType.enum';
+import { CreatePostMetaOptionDto } from './create-post-meta-option.dto';
 
 export class CreatePostDto {
   @IsString()
@@ -58,6 +61,8 @@ export class CreatePostDto {
   tags?: string[];
 
   @IsOptional()
-  @IsJSON()
-  metaOptions: [{ key: 'some-key'; value: 'some-value' }];
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => CreatePostMetaOptionDto)
+  metaOptions?: CreatePostMetaOptionDto[];
 }

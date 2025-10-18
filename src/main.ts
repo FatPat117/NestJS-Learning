@@ -21,7 +21,7 @@ async function bootstrap() {
     )
     .setTermsOfService('http://localhost:3000/terms-of-service')
     .setLicense('MIT License', 'http://localhost:3000/license')
-    .addServer('http://localhost:3000/api', 'Local Server')
+    .addServer('http://localhost:3000', 'Local Server')
     .setVersion('1.0')
     .addBearerAuth()
     .build();

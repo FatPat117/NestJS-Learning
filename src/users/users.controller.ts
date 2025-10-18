@@ -30,7 +30,7 @@ export class UsersController {
     @Query('page', new DefaultValuePipe(1), ParseIntPipe)
     page: number | undefined,
   ) {
-    return typeof params.id;
+    return this.usersService.findAll(params, limit ?? 10, page ?? 1);
   }
 
   // @Get('/:id{/:optional}')

@@ -1,3 +1,4 @@
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
   IsArray,
@@ -17,15 +18,29 @@ import { PostType } from '../enums/postType.enum';
 import { CreatePostMetaOptionDto } from './create-post-meta-option.dto';
 
 export class CreatePostDto {
+  @ApiProperty({
+    description: 'The title of the post',
+    example: 'This is a title',
+  })
   @IsString()
   @IsNotEmpty()
   @MinLength(4)
   title: string;
 
+  @ApiProperty({
+    description:
+      'The type of the post, possible values are post, page, and series',
+    example: 'post',
+    enum: PostType,
+  })
   @IsEnum(PostType)
   @IsNotEmpty()
   postType: PostType;
 
+  @ApiProperty({
+    description: 'For Example: my-url',
+    example: 'my-url',
+  })
   @IsString()
   @IsNotEmpty()
   @Matches(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, {
@@ -34,32 +49,79 @@ export class CreatePostDto {
   })
   slug: string;
 
+  @ApiProperty({
+    description:
+      'The status of the post, possible values are draft, scheduled, review, and published',
+    example: 'draft',
+    enum: PostStatus,
+  })
   @IsEnum(PostStatus)
   @IsNotEmpty()
   status: PostStatus;
 
+  @ApiPropertyOptional({
+    description: 'The content of the post',
+    example: 'This is a content',
+  })
   @IsString()
   @IsOptional()
   content?: string;
 
+  @ApiPropertyOptional({
+    description: 'The schema of the post',
+    example: '{"title": "This is a title", "content": "This is a content"}',
+  })
   @IsOptional()
   @IsJSON()
   schema?: string;
 
+  @ApiPropertyOptional({
+    description: 'The featured image url of the post',
+    example: 'https://example.com/featured-image.jpg',
+  })
   @IsOptional()
   @IsUrl()
   featuredImageUrl?: string;
 
+  @ApiPropertyOptional({
+    description: 'The publish on date of the post',
+    example: '2025-01-01',
+  })
   @IsISO8601()
   @IsOptional()
   publishOn?: Date;
 
+  @ApiPropertyOptional({
+    description: 'The tags of the post',
+    example: ['tag1', 'tag2', 'tag3'],
+    type: 'array',
+  })
   @IsOptional()
   @IsArray()
   @IsString({ each: true })
   @MinLength(3, { each: true })
   tags?: string[];
 
+  @ApiPropertyOptional({
+    description: 'The meta options of the post',
+    example: [{ key: 'sidebarEnable', value: true }],
+    type: 'array',
+    items: {
+      type: 'object',
+      properties: {
+        key: {
+          type: 'string',
+          description: 'The key of the meta option',
+          example: 'sidebarEnable',
+        },
+        value: {
+          type: 'any',
+          description: 'The value of the meta option',
+          example: true,
+        },
+      },
+    },
+  })
   @IsOptional()
   @IsArray()
   @ValidateNested({ each: true })

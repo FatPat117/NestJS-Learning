@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { UsersService } from 'src/users/providers/users.service';
 import { CreatePostDto } from '../dtos/create-posts.dto';
+import { PatchPostDto } from '../dtos/patch-post-dto';
 
 @Injectable()
 export class PostsService {
@@ -29,6 +30,10 @@ export class PostsService {
   }
 
   public createPost(post: CreatePostDto) {
+    return post;
+  }
+
+  public patchPost(post: PatchPostDto) {
     return post;
   }
 }

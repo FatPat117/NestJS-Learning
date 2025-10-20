@@ -23,6 +23,8 @@ import { UsersModule } from './users/users.module';
         username: 'postgres',
         password: 'Phattanphat1',
         database: 'nestjs-blog',
+        synchronize: true,
+        autoLoadEntities: true,
       }),
     }),
   ],

@@ -82,7 +82,7 @@ export class UsersController {
 
   @Post()
   public postUserWithBody(@Body() body: CreateUserDto) {
-    return body;
+    return this.usersService.createUser(body);
   }
 
   @Patch()

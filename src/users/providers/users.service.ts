@@ -1,13 +1,38 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { AuthService } from 'src/auth/providers/auth.service';
+import { Repository } from 'typeorm';
+import { CreateUserDto } from '../dtos/create-user.dto';
 import { GetUsersParamDto } from '../dtos/get-user-params.dto';
+import { User } from '../user.entity';
 
 @Injectable()
 export class UsersService {
   constructor(
+    // Circular dependency
     @Inject(forwardRef(() => AuthService))
     private readonly authService: AuthService,
+
+    // Repository for User entity
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
   ) {}
+
+  public async createUser(createUserDto: CreateUserDto) {
+    // Check if users exists with same email
+    const existingUser = await this.userRepository.findOne({
+      where: { email: createUserDto.email },
+    });
+
+    // if (existingUser) {
+    // }
+    // Handle exception
+
+    // Create a new user
+    const newUser = this.userRepository.create(createUserDto);
+    return this.userRepository.save(newUser);
+  }
+
   public findAll(
     getUsersParamDto: GetUsersParamDto,
     limit: number | undefined,

@@ -14,9 +14,9 @@ import {
   MinLength,
   ValidateNested,
 } from 'class-validator';
+import { CreatePostMetaOptionDto } from '../../meta-options/dtos/create-post-meta-option.dto';
 import { PostStatus } from '../enums/postStatus.enum';
 import { PostType } from '../enums/postType.enum';
-import { CreatePostMetaOptionDto } from './create-post-meta-option.dto';
 
 export class CreatePostDto {
   @ApiProperty({

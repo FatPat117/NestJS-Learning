@@ -1,11 +1,5 @@
 import { MetaOption } from 'src/meta-options/meta-option.entity';
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  OneToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { PostStatus } from './enums/postStatus.enum';
 import { PostType } from './enums/postType.enum';
 
@@ -77,6 +71,5 @@ export class Post {
     cascade: true,
     eager: true,
   })
-  @JoinColumn()
   metaOptions?: MetaOption | null;
 }

@@ -46,6 +46,7 @@ export class PostsService {
 
   public async delete(id: number) {
     // //  Find the post by id
+    // const post = await this.postsRepository.findOneBy({ id });
     // if (!post) {
     //   throw new NotFoundException('Post not found');
     // }
@@ -56,16 +57,17 @@ export class PostsService {
     // if (post.metaOptions) {
     //   await this.metaOptionsRepository.delete(post.metaOptions.id);
     // }
-    const post = await this.postsRepository.findOneBy({ id });
 
-    const inversePost = await this.metaOptionsRepository.find({
-      where: {
-        id: post?.metaOptions?.id,
-      },
-      relations: {
-        post: true,
-      },
-    });
+    // const inversePost = await this.metaOptionsRepository.find({
+    //   where: {
+    //     id: post?.metaOptions?.id,
+    //   },
+    //   relations: {
+    //     post: true,
+    //   },
+    // });
+
+    await this.postsRepository.delete(id);
     // Confirmation
     return { message: 'Post deleted successfully', id };
   }

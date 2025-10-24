@@ -24,25 +24,10 @@ export class PostsService {
     private readonly metaOptionsRepository: Repository<MetaOption>,
   ) {}
 
-  public findAll(userId: string) {
+  public async findAll(userId: string) {
     const user = this.usersService.findOneById(userId);
-
-    return [
-      {
-        user: user,
-        title: 'title',
-        content: 'Testcontent',
-        userId: userId,
-        id: 1,
-      },
-      {
-        user: user,
-        title: 'title2',
-        content: 'Testcontent2',
-        userId: userId,
-        id: 2,
-      },
-    ];
+    const posts = await this.postsRepository.find({});
+    return posts;
   }
 
   public async createPost(@Body() createPostDto: CreatePostDto) {

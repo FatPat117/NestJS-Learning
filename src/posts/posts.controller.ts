@@ -46,6 +46,6 @@ export class PostsController {
   })
   @Patch()
   public patchPost(@Body() body: PatchPostDto) {
-    return this.postService.patchPost(body);
+    return 'Patch Post';
   }
 }

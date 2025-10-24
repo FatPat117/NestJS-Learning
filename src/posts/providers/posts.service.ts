@@ -1,4 +1,4 @@
-import { Body, Injectable, NotFoundException } from '@nestjs/common';
+import { Body, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MetaOption } from 'src/meta-options/meta-option.entity';
 import { UsersService } from 'src/users/providers/users.service';
@@ -45,18 +45,27 @@ export class PostsService {
   }
 
   public async delete(id: number) {
-    //  Find the post by id
-    const post = await this.postsRepository.findOneBy({ id });
-    if (!post) {
-      throw new NotFoundException('Post not found');
-    }
-    // Delete the post
-    await this.postsRepository.delete(id);
+    // //  Find the post by id
+    // if (!post) {
+    //   throw new NotFoundException('Post not found');
+    // }
+    // // Delete the post
+    // await this.postsRepository.delete(id);
 
-    //Delete meta options
-    if (post.metaOptions) {
-      await this.metaOptionsRepository.delete(post.metaOptions.id);
-    }
+    // //Delete meta options
+    // if (post.metaOptions) {
+    //   await this.metaOptionsRepository.delete(post.metaOptions.id);
+    // }
+    const post = await this.postsRepository.findOneBy({ id });
+
+    const inversePost = await this.metaOptionsRepository.find({
+      where: {
+        id: post?.metaOptions?.id,
+      },
+      relations: {
+        post: true,
+      },
+    });
     // Confirmation
     return { message: 'Post deleted successfully', id };
   }

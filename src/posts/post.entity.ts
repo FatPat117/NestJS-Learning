@@ -64,15 +64,7 @@ export class Post {
   })
   publishOn?: Date;
 
-  @Column({
-    type: 'varchar',
-    nullable: true,
-  })
   tags?: string[];
 
-  @Column({
-    type: 'jsonb',
-    nullable: true,
-  })
   metaOptions?: CreatePostMetaOptionDto[];
 }

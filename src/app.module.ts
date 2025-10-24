@@ -7,6 +7,7 @@ import { AuthModule } from './auth/auth.module';
 import { PostsModule } from './posts/posts.module';
 import { User } from './users/user.entity';
 import { UsersModule } from './users/users.module';
+import { TagsModule } from './tags/tags.module';
 @Module({
   imports: [
     UsersModule,
@@ -27,6 +28,7 @@ import { UsersModule } from './users/users.module';
         autoLoadEntities: true,
       }),
     }),
+    TagsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

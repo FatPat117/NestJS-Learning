@@ -82,5 +82,5 @@ export class Post {
 
   @ManyToOne(() => User, (user) => user.posts)
   @JoinColumn()
-  author: User;
+  author: User | null;
 }

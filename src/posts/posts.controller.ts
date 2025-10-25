@@ -25,7 +25,7 @@ export class PostsController {
 
   // Get localhost:3000/posts:userId
   @Get('/:userId')
-  public getPosts(@Param('userId') userId: string) {
+  public getPosts(@Param('userId') userId: number) {
     return this.postService.findAll(userId);
   }
 

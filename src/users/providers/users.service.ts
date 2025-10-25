@@ -62,14 +62,8 @@ export class UsersService {
   }
 
   // Find a user by d
-  public findOneById(id: string) {
-    const isAuth = this.authService.isAuth();
-    return {
-      isAuth: isAuth,
-      id: id,
-      firstName: 'john',
-      email: 'john@example.com',
-      age: 20,
-    };
+  public async findOneById(id: number): Promise<User | null> {
+    const user = await this.userRepository.findOneBy({ id: id });
+    return user;
   }
 }

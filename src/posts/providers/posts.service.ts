@@ -24,8 +24,7 @@ export class PostsService {
     private readonly metaOptionsRepository: Repository<MetaOption>,
   ) {}
 
-  public async findAll(userId: string) {
-    const user = this.usersService.findOneById(userId);
+  public async findAll(userId: number) {
     const posts = await this.postsRepository.find({
       relations: {
         metaOptions: true,
@@ -35,9 +34,13 @@ export class PostsService {
   }
 
   public async createPost(@Body() createPostDto: CreatePostDto) {
+    // Find author from database based on authorId
+    const author = await this.usersService.findOneById(createPostDto.authorId);
+
     // Create post
     const newPost = this.postsRepository.create({
       ...createPostDto,
+      author: author,
     });
 
     // return the post

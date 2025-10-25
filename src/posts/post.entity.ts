@@ -1,9 +1,12 @@
 import { MetaOption } from 'src/meta-options/meta-option.entity';
+import { Tag } from 'src/tags/tag.entity';
 import { User } from 'src/users/user.entity';
 import {
   Column,
   Entity,
   JoinColumn,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -71,8 +74,6 @@ export class Post {
   })
   publishOn?: Date;
 
-  tags?: string[];
-
   @OneToOne(() => MetaOption, (metaOption) => metaOption.post, {
     nullable: true,
     cascade: true,
@@ -85,4 +86,8 @@ export class Post {
   })
   @JoinColumn()
   author: User | null;
+
+  @ManyToMany(() => Tag)
+  @JoinTable()
+  tags?: Tag[];
 }

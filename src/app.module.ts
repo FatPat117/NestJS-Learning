@@ -8,10 +8,14 @@ import { MetaOptionsModule } from './meta-options/meta-options.module';
 import { PostsModule } from './posts/posts.module';
 import { TagsModule } from './tags/tags.module';
 import { UsersModule } from './users/users.module';
+
+const ENV = process.env.NODE_ENV;
+console.log('Loading env:', !ENV ? '.env' : `.env.${ENV}`);
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      envFilePath: !ENV ? ['.env'] : [`.env.${ENV}`, '.env'],
     }),
     UsersModule,
     PostsModule,

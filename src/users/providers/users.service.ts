@@ -43,28 +43,26 @@ export class UsersService {
     page: number | undefined,
   ) {
     const isAuth = this.authService.isAuth();
-    const environment = this.configService.get<string>('S3_BUCKET');
+    console.log('S3_BUCKET:', this.configService.get('S3_BUCKET'));
+
     return [
       {
         isAuth: isAuth,
         firstName: 'john',
         email: 'john@example.com',
         age: 20,
-        environment: environment,
       },
       {
         isAuth: isAuth,
         firstName: 'jane',
         email: 'jane@example.com',
         age: 21,
-        environment: environment,
       },
       {
         isAuth: isAuth,
         firstName: 'jim',
         email: 'jim@example.com',
         age: 22,
-        environment: environment,
       },
     ];
   }

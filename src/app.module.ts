@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -21,15 +21,15 @@ console.log('Loading env:', !ENV ? '.env' : `.env.${ENV}`);
     PostsModule,
     AuthModule,
     TypeOrmModule.forRootAsync({
-      imports: [],
-      inject: [],
-      useFactory: () => ({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
         type: 'postgres',
-        host: 'localhost',
-        port: 5432,
-        username: 'postgres',
-        password: 'Phattanphat1',
-        database: 'nestjs-blog',
+        host: configService.get('DATABASE_HOST'),
+        port: +configService.get('DATABASE_PORT'),
+        username: configService.get('DATABASE_USER'),
+        password: configService.get('DATABASE_PASSWORD'),
+        database: configService.get('DATABASE_NAME'),
         synchronize: true,
         autoLoadEntities: true,
       }),

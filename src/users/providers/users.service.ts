@@ -1,8 +1,10 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import type { ConfigType } from '@nestjs/config';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AuthService } from 'src/auth/providers/auth.service';
 import { Repository } from 'typeorm';
+import profileConfig from '../config/profile.config';
 import { CreateUserDto } from '../dtos/create-user.dto';
 import { GetUsersParamDto } from '../dtos/get-user-params.dto';
 import { User } from '../user.entity';
@@ -20,6 +22,10 @@ export class UsersService {
 
     // Config Service
     private readonly configService: ConfigService,
+
+    // Profile Config
+    @Inject(profileConfig.KEY)
+    private readonly profileConfiguration: ConfigType<typeof profileConfig>,
   ) {}
 
   public async createUser(createUserDto: CreateUserDto) {
@@ -43,8 +49,8 @@ export class UsersService {
     page: number | undefined,
   ) {
     const isAuth = this.authService.isAuth();
-    console.log('S3_BUCKET:', this.configService.get('S3_BUCKET'));
-
+    // console.log('S3_BUCKET:', this.configService.get('S3_BUCKET'));
+    console.log(this.profileConfiguration);
     return [
       {
         isAuth: isAuth,

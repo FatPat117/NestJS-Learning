@@ -87,7 +87,7 @@ export class Post {
   @JoinColumn()
   author: User | null;
 
-  @ManyToMany(() => Tag, { eager: true })
+  @ManyToMany(() => Tag, (tag) => tag.posts, { eager: true })
   @JoinTable()
   tags?: Tag[];
 }

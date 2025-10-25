@@ -4,7 +4,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
-import { appConfig } from './config/app.config';
+import appConfig from './config/app.config';
+import databaseConfig from './config/database.config';
 import { MetaOptionsModule } from './meta-options/meta-options.module';
 import { PostsModule } from './posts/posts.module';
 import { TagsModule } from './tags/tags.module';
@@ -17,7 +18,7 @@ console.log('Loading env:', !ENV ? '.env' : `.env.${ENV}`);
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: !ENV ? ['.env'] : [`.env.${ENV}`, '.env'],
-      load: [appConfig],
+      load: [appConfig, databaseConfig],
     }),
     UsersModule,
     PostsModule,

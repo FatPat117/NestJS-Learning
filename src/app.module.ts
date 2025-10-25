@@ -9,6 +9,7 @@ import databaseConfig from './config/database.config';
 import { MetaOptionsModule } from './meta-options/meta-options.module';
 import { PostsModule } from './posts/posts.module';
 import { TagsModule } from './tags/tags.module';
+import environmentValidation from './users/config/environment.validation';
 import { UsersModule } from './users/users.module';
 
 const ENV = process.env.NODE_ENV;
@@ -19,6 +20,7 @@ console.log('Loading env:', !ENV ? '.env' : `.env.${ENV}`);
       isGlobal: true,
       envFilePath: !ENV ? ['.env'] : [`.env.${ENV}`, '.env'],
       load: [appConfig, databaseConfig],
+      validationSchema: environmentValidation,
     }),
     UsersModule,
     PostsModule,

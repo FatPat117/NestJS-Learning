@@ -87,7 +87,10 @@ export class Post {
   @JoinColumn()
   author: User | null;
 
-  @ManyToMany(() => Tag, (tag) => tag.posts, { eager: true })
+  @ManyToMany(() => Tag, (tag) => tag.posts, {
+    eager: true,
+    onDelete: 'CASCADE',
+  })
   @JoinTable()
   tags?: Tag[];
 }

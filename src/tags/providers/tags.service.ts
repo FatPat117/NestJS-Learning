@@ -23,4 +23,9 @@ export class TagsService {
     const tag = this.tagRepository.create(createTagDto);
     return await this.tagRepository.save(tag);
   }
+
+  public async delete(id: number) {
+    await this.tagRepository.delete(id);
+    return { message: 'Tags deleted true', id };
+  }
 }

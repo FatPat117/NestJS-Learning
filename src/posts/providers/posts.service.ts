@@ -1,10 +1,11 @@
-import { Body, Injectable } from '@nestjs/common';
+import { Body, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MetaOption } from 'src/meta-options/meta-option.entity';
 import { TagsService } from 'src/tags/providers/tags.service';
 import { UsersService } from 'src/users/providers/users.service';
 import { Repository } from 'typeorm';
 import { CreatePostDto } from '../dtos/create-posts.dto';
+import { PatchPostDto } from '../dtos/patch-post-dto';
 import { Post } from '../post.entity';
 
 @Injectable()
@@ -87,5 +88,35 @@ export class PostsService {
     await this.postsRepository.delete(id);
     // Confirmation
     return { message: 'Post deleted successfully', id };
+  }
+
+  public async update(patchPostDto: PatchPostDto) {
+    // Find the Tags
+    const tags = await this.tagsService.findAll(patchPostDto.tags || []);
+
+    // Find the posts
+    const post = await this.postsRepository.findOneBy({
+      id: patchPostDto.id,
+    });
+
+    if (!post) {
+      throw new NotFoundException('Post not found');
+    }
+
+    // Update the post
+    post.title = patchPostDto.title ?? post.title;
+    post.content = patchPostDto.content ?? post.content;
+    post.status = patchPostDto.status ?? post.status;
+    post.postType = patchPostDto.postType ?? post.postType;
+    post.slug = patchPostDto.slug ?? post.slug;
+    post.featuredImageUrl = patchPostDto.featuredImageUrl
+      ? post.featuredImageUrl
+      : undefined;
+    post.publishOn = patchPostDto.publishOn ?? post.publishOn;
+    // Assign the new tags
+    post.tags = tags;
+
+    // Save the post and return
+    return await this.postsRepository.save(post);
   }
 }

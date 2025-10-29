@@ -13,6 +13,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { AuthService } from 'src/auth/providers/auth.service';
 import { DataSource, Repository } from 'typeorm';
 import profileConfig from '../config/profile.config';
+import { CreateManyUserDto } from '../dtos/create-many-user.dto';
 import { CreateUserDto } from '../dtos/create-user.dto';
 import { GetUsersParamDto } from '../dtos/get-user-params.dto';
 import { User } from '../user.entity';
@@ -97,7 +98,7 @@ export class UsersService {
     return user;
   }
 
-  public async createMany(createUsersDto: CreateUserDto[]) {
-    return this.usersCreateManyProvider.createMany(createUsersDto);
+  public async createMany(createUsersDto: CreateManyUserDto) {
+    return this.usersCreateManyProvider.createMany(createUsersDto.users);
   }
 }

@@ -11,7 +11,7 @@ import type { ConfigType } from '@nestjs/config';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AuthService } from 'src/auth/providers/auth.service';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import profileConfig from '../config/profile.config';
 import { CreateUserDto } from '../dtos/create-user.dto';
 import { GetUsersParamDto } from '../dtos/get-user-params.dto';
@@ -34,7 +34,19 @@ export class UsersService {
     // Profile Config
     @Inject(profileConfig.KEY)
     private readonly profileConfiguration: ConfigType<typeof profileConfig>,
-  ) {}
+
+    // Inject Data source
+    private readonly dataSource: DataSource,
+  ) {
+    this.dataSource
+      .initialize()
+      .then(() => {
+        console.log('Data source initialized');
+      })
+      .catch((error) => {
+        console.error('Error initializing data source', error);
+      });
+  }
 
   public async createUser(createUserDto: CreateUserDto) {
     // Check if users exists with same email
@@ -88,5 +100,39 @@ export class UsersService {
       throw new NotFoundException('User not found');
     }
     return user;
+  }
+
+  public async createMany(createUsersDto: CreateUserDto[]) {
+    const newUsers: User[] = [];
+
+    // Create Query runner instance
+    const queryRunner = this.dataSource.createQueryRunner();
+
+    // Connect Query runner to datasource
+    await queryRunner.connect();
+
+    // Start Transaction
+    await queryRunner.startTransaction();
+
+    try {
+      for (const user of createUsersDto) {
+        const newUser = queryRunner.manager.create(User, user);
+        await queryRunner.manager.save(newUser);
+        newUsers.push(newUser);
+      }
+
+      // Commit Transaction
+      await queryRunner.commitTransaction();
+      return newUsers;
+    } catch (error) {
+      // Rollback Transaction
+      await queryRunner.rollbackTransaction();
+      throw error;
+    } finally {
+      // Release connection
+      await queryRunner.release();
+    }
+    // If successfully created, commit transaction
+    // If failed, rollback transaction
   }
 }

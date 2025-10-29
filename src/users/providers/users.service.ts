@@ -1,4 +1,9 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  forwardRef,
+  Inject,
+  Injectable,
+} from '@nestjs/common';
 import type { ConfigType } from '@nestjs/config';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -34,9 +39,11 @@ export class UsersService {
       where: { email: createUserDto.email },
     });
 
-    // if (existingUser) {
-    // }
-    // Handle exception
+    if (existingUser) {
+      throw new BadRequestException(
+        'The user already exists, please check your email',
+      );
+    }
 
     // Create a new user
     const newUser = this.userRepository.create(createUserDto);

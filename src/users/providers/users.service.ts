@@ -1,8 +1,11 @@
 import {
   BadRequestException,
   forwardRef,
+  HttpException,
+  HttpStatus,
   Inject,
   Injectable,
+  NotFoundException,
 } from '@nestjs/common';
 import type { ConfigType } from '@nestjs/config';
 import { ConfigService } from '@nestjs/config';
@@ -47,7 +50,13 @@ export class UsersService {
 
     // Create a new user
     const newUser = this.userRepository.create(createUserDto);
-    return this.userRepository.save(newUser);
+
+    const savedUser = await this.userRepository.save(newUser);
+    if (!savedUser) {
+      throw new BadRequestException('Unable to create user');
+    }
+
+    return newUser;
   }
 
   public findAll(
@@ -55,34 +64,29 @@ export class UsersService {
     limit: number | undefined,
     page: number | undefined,
   ) {
-    const isAuth = this.authService.isAuth();
-    // console.log('S3_BUCKET:', this.configService.get('S3_BUCKET'));
-    console.log(this.profileConfiguration);
-    return [
+    throw new HttpException(
       {
-        isAuth: isAuth,
-        firstName: 'john',
-        email: 'john@example.com',
-        age: 20,
+        status: HttpStatus.MOVED_PERMANENTLY,
+        message: 'This route is not implemented',
+        error: 'This route is not implemented',
+        fileName: 'users.service.ts',
+        lineNumber: 72,
       },
+      HttpStatus.MOVED_PERMANENTLY,
       {
-        isAuth: isAuth,
-        firstName: 'jane',
-        email: 'jane@example.com',
-        age: 21,
+        cause: new Error(),
+        description: 'This route is not implemented',
       },
-      {
-        isAuth: isAuth,
-        firstName: 'jim',
-        email: 'jim@example.com',
-        age: 22,
-      },
-    ];
+    );
   }
 
   // Find a user by d
   public async findOneById(id: number): Promise<User | null> {
     const user = await this.userRepository.findOneBy({ id: id });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
     return user;
   }
 }

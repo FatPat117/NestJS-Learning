@@ -16,6 +16,7 @@ import profileConfig from '../config/profile.config';
 import { CreateUserDto } from '../dtos/create-user.dto';
 import { GetUsersParamDto } from '../dtos/get-user-params.dto';
 import { User } from '../user.entity';
+import { UsersCreateManyProvider } from './users-create-many.provider';
 
 @Injectable()
 export class UsersService {
@@ -37,16 +38,10 @@ export class UsersService {
 
     // Inject Data source
     private readonly dataSource: DataSource,
-  ) {
-    this.dataSource
-      .initialize()
-      .then(() => {
-        console.log('Data source initialized');
-      })
-      .catch((error) => {
-        console.error('Error initializing data source', error);
-      });
-  }
+
+    // Inject Users create many provider
+    private readonly usersCreateManyProvider: UsersCreateManyProvider,
+  ) {}
 
   public async createUser(createUserDto: CreateUserDto) {
     // Check if users exists with same email
@@ -103,36 +98,6 @@ export class UsersService {
   }
 
   public async createMany(createUsersDto: CreateUserDto[]) {
-    const newUsers: User[] = [];
-
-    // Create Query runner instance
-    const queryRunner = this.dataSource.createQueryRunner();
-
-    // Connect Query runner to datasource
-    await queryRunner.connect();
-
-    // Start Transaction
-    await queryRunner.startTransaction();
-
-    try {
-      for (const user of createUsersDto) {
-        const newUser = queryRunner.manager.create(User, user);
-        await queryRunner.manager.save(newUser);
-        newUsers.push(newUser);
-      }
-
-      // Commit Transaction
-      await queryRunner.commitTransaction();
-      return newUsers;
-    } catch (error) {
-      // Rollback Transaction
-      await queryRunner.rollbackTransaction();
-      throw error;
-    } finally {
-      // Release connection
-      await queryRunner.release();
-    }
-    // If successfully created, commit transaction
-    // If failed, rollback transaction
+    return this.usersCreateManyProvider.createMany(createUsersDto);
   }
 }

@@ -1,7 +1,13 @@
-import { Body, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MetaOption } from 'src/meta-options/meta-option.entity';
 import { TagsService } from 'src/tags/providers/tags.service';
+import { Tag } from 'src/tags/tag.entity';
 import { UsersService } from 'src/users/providers/users.service';
 import { Repository } from 'typeorm';
 import { CreatePostDto } from '../dtos/create-posts.dto';
@@ -92,12 +98,28 @@ export class PostsService {
 
   public async update(patchPostDto: PatchPostDto) {
     // Find the Tags
-    const tags = await this.tagsService.findAll(patchPostDto.tags || []);
+    let tags: Tag[] | undefined = undefined;
+    let post: Post | null = null;
+    try {
+      tags = await this.tagsService.findAll(patchPostDto.tags || []);
+    } catch (error) {
+      throw new BadRequestException('Unable to find tags', { cause: error });
+    }
+
+    if (!tags || tags.length !== (patchPostDto.tags?.length ?? 0)) {
+      throw new BadRequestException('Unable to find tags', {
+        cause: new Error(),
+      });
+    }
 
     // Find the posts
-    const post = await this.postsRepository.findOneBy({
-      id: patchPostDto.id,
-    });
+    try {
+      post = await this.postsRepository.findOneBy({
+        id: patchPostDto.id,
+      });
+    } catch (error) {
+      throw new BadRequestException('Unable to find post', { cause: error });
+    }
 
     if (!post) {
       throw new NotFoundException('Post not found');
@@ -117,6 +139,12 @@ export class PostsService {
     post.tags = tags;
 
     // Save the post and return
-    return await this.postsRepository.save(post);
+    const savedPost = await this.postsRepository.save(post);
+    if (!savedPost) {
+      throw new BadRequestException('Unable to update post', {
+        cause: new Error(),
+      });
+    }
+    return savedPost;
   }
 }

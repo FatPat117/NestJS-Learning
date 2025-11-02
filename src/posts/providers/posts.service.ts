@@ -11,6 +11,7 @@ import { Tag } from 'src/tags/tag.entity';
 import { UsersService } from 'src/users/providers/users.service';
 import { Repository } from 'typeorm';
 import { CreatePostDto } from '../dtos/create-posts.dto';
+import { GetPostsDto } from '../dtos/get-posts.dto';
 import { PatchPostDto } from '../dtos/patch-post-dto';
 import { Post } from '../post.entity';
 
@@ -39,13 +40,16 @@ export class PostsService {
     private readonly metaOptionsRepository: Repository<MetaOption>,
   ) {}
 
-  public async findAll(userId: number) {
+  public async findAll(postQuery: GetPostsDto, userId: number) {
     const posts = await this.postsRepository.find({
       relations: {
         metaOptions: true,
         // author: true,
         // tags: true,
       },
+
+      skip: (postQuery.page - 1) * postQuery.limit,
+      take: postQuery.limit,
     });
     return posts;
   }

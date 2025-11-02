@@ -20,10 +20,10 @@ import { PostsService } from './providers/posts.service';
 export class PostsController {
   constructor(private readonly postService: PostsService) {}
 
-  // @Get()
-  // public getAllPosts() {
-  //   return 'Get ALL Posts';
-  // }
+  @Get()
+  public getAllPosts() {
+    return 'Get ALL Posts';
+  }
 
   // Get localhost:3000/posts:userId
   @Get('/:userId')
@@ -32,7 +32,7 @@ export class PostsController {
     @Query() query: GetPostsDto,
   ) {
     console.log(query);
-    return this.postService.findAll(userId);
+    return this.postService.findAll(query, userId);
   }
 
   @ApiOperation({

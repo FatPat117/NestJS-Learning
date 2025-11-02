@@ -5,6 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { PaginationProvider } from 'src/common/pagination/providers/pagination.provider';
 import { MetaOption } from 'src/meta-options/meta-option.entity';
 import { TagsService } from 'src/tags/providers/tags.service';
 import { Tag } from 'src/tags/tag.entity';
@@ -27,6 +28,12 @@ export class PostsService {
      * Injecting Tags service
      */
     private readonly tagsService: TagsService,
+
+    /**
+     * Injecting Pagination provider
+     */
+
+    private readonly paginationProvider: PaginationProvider,
     /**
      * Injecting Post repository
      */
@@ -41,16 +48,13 @@ export class PostsService {
   ) {}
 
   public async findAll(postQuery: GetPostsDto, userId: number) {
-    const posts = await this.postsRepository.find({
-      relations: {
-        metaOptions: true,
-        // author: true,
-        // tags: true,
+    const posts = await this.paginationProvider.paginateQuery(
+      {
+        limit: postQuery.limit,
+        page: postQuery.page,
       },
-
-      skip: (postQuery.page - 1) * postQuery.limit,
-      take: postQuery.limit,
-    });
+      this.postsRepository,
+    );
     return posts;
   }
 

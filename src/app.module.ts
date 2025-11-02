@@ -11,6 +11,7 @@ import { PostsModule } from './posts/posts.module';
 import { TagsModule } from './tags/tags.module';
 import environmentValidation from './users/config/environment.validation';
 import { UsersModule } from './users/users.module';
+import { PaginationModule } from './common/pagination/pagination.module';
 
 const ENV = process.env.NODE_ENV;
 console.log('Loading env:', !ENV ? '.env' : `.env.${ENV}`);
@@ -41,6 +42,7 @@ console.log('Loading env:', !ENV ? '.env' : `.env.${ENV}`);
     }),
     TagsModule,
     MetaOptionsModule,
+    PaginationModule,
   ],
   controllers: [AppController],
   providers: [AppService],

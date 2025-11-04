@@ -1,15 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { HashingProvider } from './hashing.provider';
+
 @Injectable()
 export class BcryptProvider implements HashingProvider {
-  async hashPassword(password: string | Buffer): Promise<string> {
-    return await bcrypt.hash(password, 10);
+  public async hashPassword(password: string | Buffer): Promise<string> {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+    return (await bcrypt.hash(password, 10)) as string;
   }
-  async comparePassword(
+
+  public async comparePassword(
     password: string | Buffer,
     hashPassword: string,
   ): Promise<boolean> {
-    return await bcrypt.compare(password, hashPassword);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+    return (await bcrypt.compare(password, hashPassword)) as string;
   }
 }

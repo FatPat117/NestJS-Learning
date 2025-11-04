@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   forwardRef,
   HttpException,
   HttpStatus,
@@ -17,6 +16,7 @@ import { CreateManyUserDto } from '../dtos/create-many-user.dto';
 import { CreateUserDto } from '../dtos/create-user.dto';
 import { GetUsersParamDto } from '../dtos/get-user-params.dto';
 import { User } from '../user.entity';
+import { CreateUserProvider } from './create-user.provider';
 import { UsersCreateManyProvider } from './users-create-many.provider';
 
 @Injectable()
@@ -42,29 +42,14 @@ export class UsersService {
 
     // Inject Users create many provider
     private readonly usersCreateManyProvider: UsersCreateManyProvider,
+
+    // Inject Create User Provider
+
+    private readonly createUserProvider: CreateUserProvider,
   ) {}
 
   public async createUser(createUserDto: CreateUserDto) {
-    // Check if users exists with same email
-    const existingUser = await this.userRepository.findOne({
-      where: { email: createUserDto.email },
-    });
-
-    if (existingUser) {
-      throw new BadRequestException(
-        'The user already exists, please check your email',
-      );
-    }
-
-    // Create a new user
-    const newUser = this.userRepository.create(createUserDto);
-
-    const savedUser = await this.userRepository.save(newUser);
-    if (!savedUser) {
-      throw new BadRequestException('Unable to create user');
-    }
-
-    return newUser;
+    return this.createUserProvider.createUser(createUserDto);
   }
 
   public findAll(

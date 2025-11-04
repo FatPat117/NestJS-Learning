@@ -14,6 +14,6 @@ export class BcryptProvider implements HashingProvider {
     hashPassword: string,
   ): Promise<boolean> {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-    return (await bcrypt.compare(password, hashPassword)) as string;
+    return (await bcrypt.compare(password, hashPassword)) as boolean;
   }
 }

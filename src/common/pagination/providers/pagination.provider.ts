@@ -1,9 +1,16 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
+import { REQUEST } from '@nestjs/core';
+import type { Request } from 'express';
 import { ObjectLiteral, Repository } from 'typeorm';
 import { PaginationQueryDto } from '../dtos/pagination-query.dto';
-
 @Injectable()
 export class PaginationProvider {
+  constructor(
+    // Injecting request
+    @Inject(REQUEST)
+    private readonly request: Request,
+  ) {}
+
   public async paginateQuery<T extends ObjectLiteral>(
     paginationQuery: PaginationQueryDto,
     repository: Repository<T>,
@@ -12,6 +19,23 @@ export class PaginationProvider {
       skip: (paginationQuery.page - 1) * paginationQuery.limit,
       take: paginationQuery.limit,
     });
+
+    // Create the request URLS
+    const baseURL =
+      this.request.protocol + '://' + this.request.headers.host + '/';
+    const newURL = new URL(this.request.url, baseURL);
+
+    // Calculating page number
+    const totalItems = await repository.count();
+    const totalPage = Math.ceil(totalItems / paginationQuery.limit);
+    const nextPage =
+      paginationQuery.page === totalPage
+        ? paginationQuery.page
+        : paginationQuery.page + 1;
+    const previousPage =
+      paginationQuery.page === 1
+        ? paginationQuery.page
+        : paginationQuery.page - 1;
     return results;
   }
 }

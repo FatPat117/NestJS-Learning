@@ -17,6 +17,7 @@ import { CreateUserDto } from '../dtos/create-user.dto';
 import { GetUsersParamDto } from '../dtos/get-user-params.dto';
 import { User } from '../user.entity';
 import { CreateUserProvider } from './create-user.provider';
+import { FindOneUserByEmailProvider } from './find-one-user-by-email.provider';
 import { UsersCreateManyProvider } from './users-create-many.provider';
 
 @Injectable()
@@ -46,6 +47,9 @@ export class UsersService {
     // Inject Create User Provider
 
     private readonly createUserProvider: CreateUserProvider,
+
+    // Inject Find One User By Email Provider
+    private readonly findOneUserByEmailProvider: FindOneUserByEmailProvider,
   ) {}
 
   public async createUser(createUserDto: CreateUserDto) {
@@ -85,5 +89,9 @@ export class UsersService {
 
   public async createMany(createUsersDto: CreateManyUserDto) {
     return this.usersCreateManyProvider.createMany(createUsersDto.users);
+  }
+
+  public async findOneByEmail(email: string): Promise<User | null> {
+    return await this.findOneUserByEmailProvider.findOneUserByEmail(email);
   }
 }

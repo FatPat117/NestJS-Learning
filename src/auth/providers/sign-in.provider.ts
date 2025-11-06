@@ -6,7 +6,10 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
+import type { ConfigType } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
 import { UsersService } from 'src/users/providers/users.service';
+import jwtConfig from '../config/jwt.config';
 import { SignInDto } from '../dtos/signin.dto';
 import { HashingProvider } from './hashing.provider';
 
@@ -24,6 +27,18 @@ export class SignInProvider {
      */
     @Inject(HashingProvider)
     private readonly hashingProvider: HashingProvider,
+
+    /**
+     * Inject jwtService
+     */
+    @Inject(JwtService)
+    private readonly jwtService: JwtService,
+
+    /**
+     * Inject JWT config
+     */
+    @Inject(jwtConfig.KEY)
+    private readonly jwtConfiguration: ConfigType<typeof jwtConfig>,
   ) {}
 
   public async signin(signInDto: SignInDto) {
@@ -47,7 +62,20 @@ export class SignInProvider {
     if (!isEqual) {
       throw new UnauthorizedException('Invalid password');
     }
-    // Send confirmatio
-    return true;
+    // Send confirmation
+
+    const accessToken = await this.jwtService.signAsync(
+      {
+        sub: user.id,
+        email: user.email,
+      },
+      {
+        secret: this.jwtConfiguration.secret,
+        expiresIn: this.jwtConfiguration.accessTokenTTL,
+        audience: this.jwtConfiguration.audience,
+        issuer: this.jwtConfiguration.issuer,
+      },
+    );
+    return { accessToken };
   }
 }
